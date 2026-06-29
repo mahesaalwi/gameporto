@@ -46,10 +46,10 @@ export class PlayerAnimator {
         if (name.includes('idle') || name === 'armature|idle') {
           this.actions['idle'] = action;
         } else if (name === 'run') {
-          action.timeScale = 1.0;
+          action.timeScale = 1.5; // Match fast sprint speed
           this.actions['run'] = action;
         } else if (name.includes('walk') || name === 'armature|walk') {
-          action.timeScale = 1.6;
+          action.timeScale = 1.6; // Match faster base speed
           this.actions['walk'] = action;
         } else if (name.includes('jump') || name.includes('fall')) {
           action.setLoop(THREE.LoopOnce, 1);
@@ -82,9 +82,11 @@ export class PlayerAnimator {
       if (!this.actions['idle'] && this.actions['mixamo.com']) {
         this.actions['idle'] = this.actions['mixamo.com'];
       }
+      
+      // Fallback in case Run.fbx fails to load or parse
       if (this.actions['walk'] && !this.actions['run']) {
         const runAction = this.mixer.clipAction(this.actions['walk'].getClip());
-        runAction.timeScale = 1.8;
+        runAction.timeScale = 2.2;
         this.actions['run'] = runAction;
       }
     }
@@ -134,21 +136,22 @@ export class PlayerAnimator {
    * Smoothly crossfade to a new animation action. Fixes T-Pose glitch by avoiding setTimeout.
    */
   public playAnimation(name: string, fadeDuration: number = 0.2): void {
-    if (!this.mixer || !this.actions[name]) return;
+    if (!this.mixer) return;
+    
+    // Fallback if action is missing (should be caught by initMixer, but just in case)
+    if (!this.actions[name]) {
+      if (name === 'run' && this.actions['walk']) name = 'walk';
+      else return;
+    }
+
     if (this.state.currentAction === name) return;
 
     const action = this.actions[name];
     if (this.state.currentAction && this.actions[this.state.currentAction]) {
       const prevAction = this.actions[this.state.currentAction];
       
-      // Use Three.js crossFadeTo which correctly handles weight management without strict setTimeouts
-      const isLocomotionTransition = (name === 'walk' || name === 'run') && 
-                                     (this.state.currentAction === 'walk' || this.state.currentAction === 'run');
-                                     
-      if (!isLocomotionTransition) {
-        action.reset();
-      }
-      
+      // Always reset to ensure animation starts cleanly and isn't stuck at the end of a frame
+      action.reset();
       action.play();
       prevAction.crossFadeTo(action, fadeDuration, true);
     } else {

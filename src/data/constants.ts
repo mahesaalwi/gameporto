@@ -67,10 +67,10 @@ export const GAME_CONSTANTS = {
 
   WORLD: {
     TREASURE_CONFIGS: [
-      { x: 0, y: 3, z: -5, type: 'about' as TreasureType },
-      { x: 10, y: 2.5, z: -3, type: 'expertise' as TreasureType },
-      { x: -5, y: 2.5, z: 12, type: 'tools' as TreasureType },
-      { x: 12, y: 2.5, z: 10, type: 'experience' as TreasureType },
+      { x: -4.5, y: 1.2, z: -6.0, type: 'about' as TreasureType },
+      { x: -1.5, y: 1.2, z: -6.5, type: 'expertise' as TreasureType },
+      { x: 1.5, y: 1.2, z: -6.5, type: 'tools' as TreasureType },
+      { x: 4.5, y: 1.2, z: -6.0, type: 'experience' as TreasureType },
     ],
     BOSS_POSITION: { x: 0, y: 1, z: -30 },
     BOX_NAMES: [

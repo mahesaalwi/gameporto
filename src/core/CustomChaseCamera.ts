@@ -16,8 +16,8 @@ export class CustomChaseCamera {
   private targetSpherical: THREE.Spherical = new THREE.Spherical(3.0, Math.PI / 2.1, Math.PI);
 
   // Configuration
-  private readonly defaultRadius: number = 3.0;
-  private readonly minRadius: number = 1.5;
+  private readonly defaultRadius: number = 5.5;
+  private readonly minRadius: number = 2.5;
   // maxRadius reserved for scroll-zoom feature
   private readonly minPolarAngle: number = THREE.MathUtils.degToRad(15);  // Don't look under map
   private readonly maxPolarAngle: number = THREE.MathUtils.degToRad(85);  // Don't go fully overhead

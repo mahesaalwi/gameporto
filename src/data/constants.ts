@@ -29,6 +29,8 @@ export const GAME_CONSTANTS = {
     CAPSULE_RADIUS: 0.4,
     /** Distance from capsule center to bottom (halfHeight + radius) */
     CAPSULE_BOTTOM_OFFSET: 0.9,
+    /** Visual offset to prevent clipping into the ground for certain models */
+    MODEL_Y_OFFSET: 0.15,
     BASE_SPEED: 6.5,
     SPRINT_MULTIPLIER: 1.8,
     GRAVITY: -15.0,

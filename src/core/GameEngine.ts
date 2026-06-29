@@ -191,9 +191,10 @@ export class GameEngine {
       wrapper.scale.setScalar(scale);
 
       // Align character feet precisely to the bottom of the physics capsule.
-      // In Player.ts, this.mesh is placed at the center of the capsule.
       // The capsule has halfHeight 0.5 and radius 0.4, so its bottom is 0.9 units below the center.
-      wrapper.position.set(0, -0.9, 0);
+      // We also add a visual offset to prevent models from clipping into the ground.
+      const yOffset = -GAME_CONSTANTS.PLAYER.CAPSULE_BOTTOM_OFFSET + (GAME_CONSTANTS.PLAYER.MODEL_Y_OFFSET || 0);
+      wrapper.position.set(0, yOffset, 0);
 
       if (playerModel.userData.animations && playerModel.userData.animations.length > 0) {
         if (modelPath.includes('kgirls') || modelPath.includes('scene')) {

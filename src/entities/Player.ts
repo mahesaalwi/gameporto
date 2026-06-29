@@ -412,7 +412,7 @@ export class Player {
     }
 
     // Smoothly interpolate to the final quaternion
-    this.mesh.quaternion.slerp(finalQuat, 10 * delta);
+    this.mesh.quaternion.slerp(finalQuat, 8 * delta);
 
     // VFX update
     if (this.powerUpAuraLight && this.state.isPoweredUp) {

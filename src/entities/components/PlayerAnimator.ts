@@ -46,10 +46,10 @@ export class PlayerAnimator {
         if (name.includes('idle') || name === 'armature|idle') {
           this.actions['idle'] = action;
         } else if (name === 'run') {
-          action.timeScale = 1.8;
+          action.timeScale = 1.3;
           this.actions['run'] = action;
         } else if (name.includes('walk') || name === 'armature|walk') {
-          action.timeScale = 0.85;
+          action.timeScale = 1.2;
           this.actions['walk'] = action;
         } else if (name.includes('jump') || name.includes('fall')) {
           action.setLoop(THREE.LoopOnce, 1);

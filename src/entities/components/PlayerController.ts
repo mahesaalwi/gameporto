@@ -22,8 +22,8 @@ export class PlayerController {
 
   // Inertia & Momentum
   public currentVelocity: THREE.Vector3 = new THREE.Vector3();
-  private ACCELERATION = 15.0;
-  private DECELERATION = 20.0;
+  private ACCELERATION = 8.0;
+  private DECELERATION = 10.0;
 
   // Settings
   private TERMINAL_VELOCITY = GAME_CONSTANTS.PLAYER.TERMINAL_VELOCITY;

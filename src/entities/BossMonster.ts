@@ -35,10 +35,13 @@ export class BossMonster {
   private healthBarGroup: THREE.Group;
   private healthBarFill: THREE.Mesh;
 
+  private elapsedTime: number = 0;
+
   constructor(
     private scene: THREE.Scene,
     private world: RAPIER.World,
-    position: THREE.Vector3
+    position: THREE.Vector3,
+    private camera?: THREE.Camera
   ) {
     this.mesh = new THREE.Group();
 
@@ -203,12 +206,16 @@ export class BossMonster {
       }
     }
 
-    // Health bar billboard - always face camera (approximation: face up)
-    this.healthBarGroup.lookAt(
-      this.mesh.position.x,
-      this.mesh.position.y + 10,
-      this.mesh.position.z + 10
-    );
+    // Health bar billboard
+    if (this.camera) {
+      this.healthBarGroup.quaternion.copy(this.camera.quaternion);
+    } else {
+      this.healthBarGroup.lookAt(
+        this.mesh.position.x,
+        this.mesh.position.y + 10,
+        this.mesh.position.z + 10
+      );
+    }
 
     // Hit flash animation
     if (this.hitFlashTimer > 0) {
@@ -220,15 +227,18 @@ export class BossMonster {
       this.bodyMaterial.emissiveIntensity = 0.5;
     }
 
+    this.elapsedTime += delta;
+    const t = this.elapsedTime;
+
     // Idle breathing animation
-    const breathe = Math.sin(Date.now() * 0.002) * 0.05;
+    const breathe = Math.sin(t * 2.0) * 0.05;
     this.mesh.children[0].scale.y = 1 + breathe;
 
     // Eye pulse
-    this.eyeMaterial.emissiveIntensity = 1.5 + Math.sin(Date.now() * 0.005) * 0.5;
+    this.eyeMaterial.emissiveIntensity = 1.5 + Math.sin(t * 5.0) * 0.5;
 
     // Core pulse
-    this.coreMaterial.emissiveIntensity = 0.8 + Math.sin(Date.now() * 0.003) * 0.4;
+    this.coreMaterial.emissiveIntensity = 0.8 + Math.sin(t * 3.0) * 0.4;
   }
 
   /**

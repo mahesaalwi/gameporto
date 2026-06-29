@@ -33,8 +33,9 @@ export class CyberCity {
     let scaleFactor = 1.0;
     if (!box.isEmpty()) {
       box.getSize(size);
-      if (size.x > 0.001 && size.x < 0) {
+      if (size.x > 0.001 && size.x < 10) {
         scaleFactor = 100 / size.x;
+        mapScene.scale.setScalar(scaleFactor);
         console.log(`[CyberCity] Map is microscopic (${size.x}), scaling up by ${scaleFactor}`);
       }
     }
@@ -47,6 +48,7 @@ export class CyberCity {
     // Add to scene
     this.scene.add(mapScene);
     this.meshes.push(mapScene);
+    this.mapGroup = mapScene;
 
     // Collect collidable meshes for camera raycast
     mapScene.traverse((child) => {

@@ -9,7 +9,7 @@ import { Player } from '../entities/Player';
 import { GAME_CONSTANTS } from '../data/constants';
 import { CyberCity } from '../world/CyberCity';
 import { NeonLighting } from '../world/NeonLighting';
-import { TreasureBox, type TreasureType } from '../entities/TreasureBox';
+import { TreasureBox } from '../entities/TreasureBox';
 import { BossMonster } from '../entities/BossMonster';
 import { UIManager } from '../ui/UIManager';
 import { MobileControls } from '../ui/MobileControls';
@@ -52,6 +52,9 @@ export class GameEngine {
   private isBossAreaActive: boolean = false;
   private bossDefeated: boolean = false;
 
+  private readonly FIXED_TIMESTEP = 1 / 60;
+  private physicsAccumulator = 0;
+
   // Collider-to-entity map for collision resolution
   private colliderEntityMap: Map<number, { type: string; entity: TreasureBox | BossMonster }> = new Map();
 
@@ -65,7 +68,8 @@ export class GameEngine {
     await RAPIER.init();
 
     // Create physics world with gravity
-    const gravity = new RAPIER.Vector3(0.0, -91.81, 0.0);
+    const { x, y, z } = GAME_CONSTANTS.PHYSICS.GRAVITY;
+    const gravity = new RAPIER.Vector3(x, y, z);
     this.physicsWorld = new RAPIER.World(gravity);
     this.eventQueue = new RAPIER.EventQueue(true);
 
@@ -275,7 +279,7 @@ export class GameEngine {
       if (this.cyberCity) {
         this.cyberCity.getMapGroup()?.traverse((child) => {
           if (child instanceof THREE.Mesh) {
-            child.frustumCulled = false;
+            child.geometry.computeBoundingSphere();
           }
         });
       }
@@ -378,12 +382,10 @@ export class GameEngine {
     }
 
     // Create treasure boxes with different content types
-    const treasureConfigs: { position: THREE.Vector3; type: TreasureType }[] = [
-      { position: new THREE.Vector3(0, 3, 4), type: 'about' }, // Center front
-      { position: new THREE.Vector3(3.5, 2.5, 3), type: 'expertise' }, // Right front
-      { position: new THREE.Vector3(-3.5, 2.5, 3), type: 'tools' }, // Left front
-      { position: new THREE.Vector3(5.5, 2.5, 4.5), type: 'experience' }, // Far right front
-    ];
+    const treasureConfigs = GAME_CONSTANTS.WORLD.TREASURE_CONFIGS.map(cfg => ({
+      position: new THREE.Vector3(cfg.x, cfg.y, cfg.z),
+      type: cfg.type,
+    }));
 
     for (const config of treasureConfigs) {
       const box = new TreasureBox(
@@ -404,7 +406,8 @@ export class GameEngine {
     this.boss = new BossMonster(
       this.scene,
       this.physicsWorld,
-      new THREE.Vector3(0, 1, -30)
+      new THREE.Vector3(0, 1, -30),
+      this.chaseCamera.getCamera()
     );
     this.colliderEntityMap.set(this.boss.getSensorHandle(), { type: 'boss', entity: this.boss });
 
@@ -412,7 +415,6 @@ export class GameEngine {
     this.chaseCamera.setTarget(this.player.getCameraTarget());
 
     // Event listeners
-    this.setupEventListeners();
     this.setupGameEvents();
 
     // Resize handler
@@ -448,9 +450,12 @@ export class GameEngine {
     const delta = this.clock.getDelta();
     const clampedDelta = Math.min(delta, 0.05); // Clamp to prevent spiral of death
 
-    // Sync physics timestep with rendering delta to prevent speedup/slowdown at different refresh rates
-    this.physicsWorld.timestep = clampedDelta;
-    this.physicsWorld.step(this.eventQueue);
+    this.physicsAccumulator += clampedDelta;
+    while (this.physicsAccumulator >= this.FIXED_TIMESTEP) {
+      this.physicsWorld.timestep = this.FIXED_TIMESTEP;
+      this.physicsWorld.step(this.eventQueue);
+      this.physicsAccumulator -= this.FIXED_TIMESTEP;
+    }
 
     // Pass camera directions to player for camera-relative movement (GTA style)
     this.player.setCameraDirections(
@@ -602,13 +607,6 @@ export class GameEngine {
       };
       animateEffect();
     });
-  }
-
-  /**
-   * Setup window-level event listeners.
-   */
-  private setupEventListeners(): void {
-    // nothing extra for now, InputManager handles keyboard/mouse/touch
   }
 
   /**

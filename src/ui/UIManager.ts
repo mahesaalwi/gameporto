@@ -18,6 +18,7 @@ export class UIManager {
   private introDialogue: HTMLDivElement;
 
   private boundHandlers: Map<string, (...args: unknown[]) => void> = new Map();
+  private loadProgressInterval: ReturnType<typeof setInterval> | null = null;
 
   constructor() {
     this.overlay = this.createDiv('game-ui-overlay');
@@ -97,11 +98,14 @@ export class UIManager {
     document.body.appendChild(screen);
 
     let progress = 0;
-    const loadInterval = setInterval(() => {
+    this.loadProgressInterval = setInterval(() => {
       progress += Math.random() * 15;
       if (progress >= 100) {
         progress = 100;
-        clearInterval(loadInterval);
+        if (this.loadProgressInterval) {
+          clearInterval(this.loadProgressInterval);
+          this.loadProgressInterval = null;
+        }
       }
       const bar = document.getElementById('loading-bar');
       if (bar) bar.style.width = `${progress}%`;
@@ -168,6 +172,10 @@ export class UIManager {
   }
 
   public hideLoading(): void {
+    if (this.loadProgressInterval) {
+      clearInterval(this.loadProgressInterval);
+      this.loadProgressInterval = null;
+    }
     setTimeout(() => {
       this.loadingScreen.classList.add('fade-out');
       setTimeout(() => {

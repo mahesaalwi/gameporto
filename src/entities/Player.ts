@@ -27,7 +27,13 @@ export class Player {
   private auraMixer: THREE.AnimationMixer | null = null;
   private _lastFacingAngle: number = Math.PI;
 
-
+  // Pre-allocated objects for update loop
+  private _facingQuat: THREE.Quaternion = new THREE.Quaternion();
+  private _surfaceNormalQuat: THREE.Quaternion = new THREE.Quaternion();
+  private _upVec: THREE.Vector3 = new THREE.Vector3(0, 1, 0);
+  private _raycaster: THREE.Raycaster = new THREE.Raycaster();
+  private _rayOrigin: THREE.Vector3 = new THREE.Vector3();
+  private _rayDown: THREE.Vector3 = new THREE.Vector3(0, -1, 0);
 
   constructor(
     private scene: THREE.Scene,
@@ -90,7 +96,7 @@ export class Player {
 
     this.setupEventListeners();
   }
-  w
+
   private createFallbackMesh(): void {
     const bodyMaterial = new THREE.MeshStandardMaterial({
       color: 0x00f0ff,
@@ -121,7 +127,6 @@ export class Player {
   }
 
   public getMesh(): THREE.Object3D { return this.mesh; }
-  public getCameraPivot(): THREE.Object3D { return this.cameraPivot; }
 
   public setCameraDirections(forward: THREE.Vector3, right: THREE.Vector3): void {
     this.controller.setCameraDirections(forward, right);
@@ -283,10 +288,12 @@ export class Player {
     }
   }
 
-  private createPowerUpVFX(): void {
+  private createPowerUpVFX(color: number = 0xff00aa): void {
     if (!this.powerUpAuraLight) {
-      this.powerUpAuraLight = new THREE.PointLight(0xff00aa, 0, 4);
+      this.powerUpAuraLight = new THREE.PointLight(color, 0, 4);
       this.mesh.add(this.powerUpAuraLight);
+    } else {
+      this.powerUpAuraLight.color.setHex(color);
     }
     this.powerUpAuraLight.intensity = 5;
 
@@ -301,8 +308,7 @@ export class Player {
   }
 
   public getColliderHandle(): number {
-    // We assume Rapier collider has handle property
-    return (this.controller as any).collider ? (this.controller as any).collider.handle : 0;
+    return this.controller.getColliderHandle();
   }
 
   public getDamageMultiplier(): number {
@@ -311,9 +317,9 @@ export class Player {
 
   public activatePowerUp(colorHex: number = 0xff00aa, duration: number = 10.0, dmgBoost: number = 1.0): void {
     this.state.isPoweredUp = true;
-    this.state.damageMultiplier = 2.0;
-    this.state.powerUpTimer = 10.0;
-    this.createPowerUpVFX();
+    this.state.damageMultiplier = dmgBoost;
+    this.state.powerUpTimer = duration;
+    this.createPowerUpVFX(colorHex);
   }
 
   public dispose(): void {
@@ -379,20 +385,18 @@ export class Player {
       targetAngle = this._lastFacingAngle || Math.PI; // Default facing
     }
 
-    const facingQuat = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), targetAngle);
-    let finalQuat = facingQuat;
+    this._facingQuat.setFromAxisAngle(this._upVec, targetAngle);
+    let finalQuat = this._facingQuat;
 
     // Normal Alignment from PRD
     if (this.meshTargets && this.meshTargets.length > 0) {
-      const threeRaycaster = new THREE.Raycaster();
-      const origin = new THREE.Vector3(pos.x, pos.y + 10, pos.z);
-      const direction = new THREE.Vector3(0, -1, 0);
-      threeRaycaster.set(origin, direction);
+      this._rayOrigin.set(pos.x, pos.y + 10, pos.z);
+      this._raycaster.set(this._rayOrigin, this._rayDown);
 
-      const hits = threeRaycaster.intersectObjects(this.meshTargets, false);
+      const hits = this._raycaster.intersectObjects(this.meshTargets, false);
       if (hits.length > 0 && hits[0].face) {
         const hit = hits[0];
-        const worldNormal = hit.face.normal.clone();
+        const worldNormal = hit.face!.normal.clone();
         worldNormal.transformDirection(hit.object.matrixWorld);
 
         // Ensure normal points upwards (avoids upside-down orientation on double-sided meshes)
@@ -400,11 +404,10 @@ export class Player {
           worldNormal.negate();
         }
 
-        const up = new THREE.Vector3(0, 1, 0);
-        const surfaceNormalQuat = new THREE.Quaternion().setFromUnitVectors(up, worldNormal);
+        this._surfaceNormalQuat.setFromUnitVectors(this._upVec, worldNormal);
 
         // Combine surface tilt with facing rotation
-        finalQuat = surfaceNormalQuat.multiply(facingQuat);
+        finalQuat = this._surfaceNormalQuat.multiply(this._facingQuat);
       }
     }
 

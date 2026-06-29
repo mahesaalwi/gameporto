@@ -33,6 +33,9 @@ export class CustomChaseCamera {
   private desiredCameraPos: THREE.Vector3 = new THREE.Vector3();
   private currentLookAt: THREE.Vector3 = new THREE.Vector3();
   private rayDirection: THREE.Vector3 = new THREE.Vector3();
+  private _forward: THREE.Vector3 = new THREE.Vector3();
+  private _right: THREE.Vector3 = new THREE.Vector3();
+  private _up: THREE.Vector3 = new THREE.Vector3(0, 1, 0);
 
   // Collision raycaster
   private raycaster: THREE.Raycaster = new THREE.Raycaster();
@@ -81,21 +84,18 @@ export class CustomChaseCamera {
    * Get the camera's forward direction projected on XZ plane (for camera-relative movement).
    */
   getForwardDirection(): THREE.Vector3 {
-    const forward = new THREE.Vector3();
-    this.camera.getWorldDirection(forward);
-    forward.y = 0;
-    forward.normalize();
-    return forward;
+    this.camera.getWorldDirection(this._forward);
+    this._forward.y = 0;
+    this._forward.normalize();
+    return this._forward;
   }
 
   /**
    * Get the camera's right direction projected on XZ plane.
    */
   getRightDirection(): THREE.Vector3 {
-    const forward = this.getForwardDirection();
-    const right = new THREE.Vector3();
-    right.crossVectors(forward, new THREE.Vector3(0, 1, 0)).normalize();
-    return right;
+    this._right.crossVectors(this.getForwardDirection(), this._up).normalize();
+    return this._right;
   }
 
   update(delta: number): void {

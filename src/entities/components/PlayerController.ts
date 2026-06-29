@@ -51,6 +51,10 @@ export class PlayerController {
     this.cameraRight.copy(right);
   }
 
+  public getColliderHandle(): number {
+    return this.collider.handle;
+  }
+
   public getPosition(): RAPIER.Vector {
     return this.body.translation();
   }

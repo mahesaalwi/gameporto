@@ -161,7 +161,7 @@ export class TreasureBox {
       const hits = threeRaycaster.intersectObjects(meshTargets, false);
       if (hits.length > 0 && hits[0].face) {
         const hit = hits[0];
-        const worldNormal = hit.face.normal.clone();
+        const worldNormal = hit.face!.normal.clone();
         worldNormal.transformDirection(hit.object.matrixWorld);
 
         // Ensure normal points upwards (avoids upside-down orientation on double-sided meshes)

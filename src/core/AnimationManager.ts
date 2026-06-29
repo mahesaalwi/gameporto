@@ -32,18 +32,10 @@ export class AnimationManager {
       track.name = `${boneName}.${propName}`;
     });
 
-    // Lock X and Z axes for hips if needed
+    // Lock X, Y, and Z axes for hips by completely removing the position track
+    // This prevents retargeted animations (like Dwarf Walk) from sinking or floating the character
     if (lockXZ) {
-      const hipsTrack = clip.tracks.find(t => t.name.includes('Hips.position'));
-      if (hipsTrack) {
-        for (let i = 0; i < hipsTrack.values.length; i += 3) {
-          hipsTrack.values[i] = hipsTrack.values[0];     // Lock X
-          hipsTrack.values[i+2] = hipsTrack.values[2];   // Lock Z
-          if (yStartsAtZero) {
-             // Some animations like drop kick need specific Y adjustments but let's keep it safe
-          }
-        }
-      }
+      clip.tracks = clip.tracks.filter(t => !t.name.includes('Hips.position'));
     }
 
     return clip;

@@ -28,6 +28,7 @@ export class InputManager {
   private boundOnTouchStart: (e: TouchEvent) => void;
   private boundOnTouchMove: (e: TouchEvent) => void;
   private boundOnTouchEnd: (e: TouchEvent) => void;
+  private boundOnWindowBlur: () => void;
 
   private canvas: HTMLElement | null = null;
 
@@ -41,9 +42,11 @@ export class InputManager {
     this.boundOnTouchStart = this.onTouchStart.bind(this);
     this.boundOnTouchMove = this.onTouchMove.bind(this);
     this.boundOnTouchEnd = this.onTouchEnd.bind(this);
+    this.boundOnWindowBlur = this.onWindowBlur.bind(this);
 
     window.addEventListener('keydown', this.boundOnKeyDown);
     window.addEventListener('keyup', this.boundOnKeyUp);
+    window.addEventListener('blur', this.boundOnWindowBlur);
     document.addEventListener('mousemove', this.boundOnMouseMove);
     document.addEventListener('mousedown', this.boundOnMouseDown);
     document.addEventListener('pointerlockchange', this.boundOnPointerLockChange);
@@ -101,6 +104,16 @@ export class InputManager {
     if (e.code === 'ShiftLeft' || e.code === 'ShiftRight' || e.key === 'Shift') {
       this.sprintPressed = false;
     }
+  }
+
+  private onWindowBlur(): void {
+    this.keysPressed.clear();
+    this.sprintPressed = false;
+    this.jumpPressed = false;
+    this.actionPressed = false;
+    this._isDropKicking = false;
+    this._isPunching = false;
+    this._isKicking = false;
   }
 
   // ──────────── Mouse (Desktop Camera Orbit) ────────────
@@ -314,7 +327,9 @@ export class InputManager {
   dispose(): void {
     window.removeEventListener('keydown', this.boundOnKeyDown);
     window.removeEventListener('keyup', this.boundOnKeyUp);
+    window.removeEventListener('blur', this.boundOnWindowBlur);
     document.removeEventListener('mousemove', this.boundOnMouseMove);
+    document.removeEventListener('mousedown', this.boundOnMouseDown);
     document.removeEventListener('pointerlockchange', this.boundOnPointerLockChange);
 
     if (this.canvas) {

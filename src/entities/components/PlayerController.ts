@@ -142,5 +142,16 @@ export class PlayerController {
     });
 
     this.state.grounded = this.characterController.computedGrounded();
+
+    // Prevent endless falling out of bounds
+    if (currentPos.y < -50) {
+      this.body.setNextKinematicTranslation({
+        x: 0,
+        y: GAME_CONSTANTS.PLAYER.SPAWN_Y,
+        z: 0,
+      });
+      this.state.velocityY = 0;
+      this.currentVelocity.set(0, 0, 0);
+    }
   }
 }

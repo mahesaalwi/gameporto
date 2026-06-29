@@ -49,7 +49,7 @@ export class PlayerAnimator {
           action.timeScale = 1.5; // Match fast sprint speed
           this.actions['run'] = action;
         } else if (name.includes('walk') || name === 'armature|walk') {
-          action.timeScale = 1.6; // Match faster base speed
+          action.timeScale = 2.2; // Match faster base speed and Dwarf Walk stride
           this.actions['walk'] = action;
         } else if (name.includes('jump') || name.includes('fall')) {
           action.setLoop(THREE.LoopOnce, 1);

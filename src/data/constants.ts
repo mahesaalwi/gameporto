@@ -25,14 +25,12 @@ export const GAME_CONSTANTS = {
 
   PLAYER: {
     TARGET_HEIGHT: 1.6,
-    CAPSULE_HALF_HEIGHT: 0.5,
-    CAPSULE_RADIUS: 0.4,
     /** Distance from capsule center to bottom (halfHeight + radius) */
     CAPSULE_BOTTOM_OFFSET: 0.9,
     /** Visual offset to prevent clipping into the ground for certain models */
-    MODEL_Y_OFFSET: 0.15,
-    BASE_SPEED: 6.5,
-    SPRINT_MULTIPLIER: 1.8,
+    MODEL_Y_OFFSET: 0.05,
+    BASE_SPEED: 5.5,
+    SPRINT_MULTIPLIER: 2.8,
     GRAVITY: -15.0,
     JUMP_IMPULSE: 7.0,
     TERMINAL_VELOCITY: -20.0,

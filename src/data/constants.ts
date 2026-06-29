@@ -9,6 +9,7 @@ export const GAME_CONSTANTS = {
     },
     ANIMATIONS: {
       WALK: '/models/characters/modeling/Catwalk Walk.fbx',
+      RUN: '/models/characters/modeling/Run.fbx',
       JUMP: '/models/characters/modeling/Jump.fbx',
       STAND_UP: '/models/characters/modeling/Stand Up.fbx',
       IDLE: '/models/characters/modeling/Idle.fbx',
@@ -28,8 +29,8 @@ export const GAME_CONSTANTS = {
     CAPSULE_RADIUS: 0.4,
     /** Distance from capsule center to bottom (halfHeight + radius) */
     CAPSULE_BOTTOM_OFFSET: 0.9,
-    BASE_SPEED: 4.0,
-    SPRINT_MULTIPLIER: 2.0,
+    BASE_SPEED: 4.8,
+    SPRINT_MULTIPLIER: 1.8,
     GRAVITY: -15.0,
     JUMP_IMPULSE: 7.0,
     TERMINAL_VELOCITY: -20.0,

@@ -80,7 +80,8 @@ export class PlayerController {
     }
 
     // Handle Sprinting Speed
-    const targetSpeed = this.input.isSprintPressed() ? this.state.baseSpeed * 2.0 : this.state.baseSpeed;
+    const sprintMulti = GAME_CONSTANTS.PLAYER.SPRINT_MULTIPLIER;
+    const targetSpeed = this.input.isSprintPressed() ? this.state.baseSpeed * sprintMulti : this.state.baseSpeed;
 
     // Apply Inertia & Momentum (Acceleration / Deceleration)
     if (this.targetMoveDir.lengthSq() > 0) {

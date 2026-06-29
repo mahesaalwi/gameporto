@@ -90,6 +90,7 @@ export class AnimationManager {
 
     const loadPromises = [
       this.loadAnimation(anims.WALK, 'walk', true),
+      this.loadAnimation(anims.RUN, 'run', true),
       this.loadAnimation(anims.JUMP, 'jump', true),
       this.loadAnimation(anims.STAND_UP, 'stand_up', true),
       this.loadAnimation(anims.IDLE, 'idle', true),

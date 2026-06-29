@@ -46,7 +46,7 @@ export class PlayerAnimator {
         if (name.includes('idle') || name === 'armature|idle') {
           this.actions['idle'] = action;
         } else if (name === 'run') {
-          action.timeScale = 1.3;
+          action.timeScale = 1.0;
           this.actions['run'] = action;
         } else if (name.includes('walk') || name === 'armature|walk') {
           action.timeScale = 1.2;

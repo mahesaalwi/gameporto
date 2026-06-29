@@ -429,8 +429,8 @@ export class Player {
           this.animator.playAnimation('jump');
         }
       } else if (this.state.currentSpeed > 0.5) { // Smoothed moving threshold
-        // Use threshold based on baseSpeed for smooth transitions
-        if (this.state.currentSpeed > this.state.baseSpeed + 0.5) {
+        // Trigger run animation immediately on input for better responsiveness
+        if (this.input.isSprintPressed()) {
           this.animator.playAnimation('run', 0.3); // Slower crossfade for run
         } else {
           this.animator.playAnimation('walk', 0.2);

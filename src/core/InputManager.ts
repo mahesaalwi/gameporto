@@ -80,7 +80,7 @@ export class InputManager {
     if (e.code === 'Space' || e.key === ' ') {
       this.jumpPressed = true;
     }
-    if (e.code === 'ShiftLeft' || e.code === 'ShiftRight' || e.key === 'Shift') {
+    if (e.code === 'ShiftLeft' || e.code === 'ShiftRight' || e.key === 'Shift' || e.shiftKey) {
       this.sprintPressed = true;
     }
     if (e.code === 'Tab') {
@@ -101,7 +101,8 @@ export class InputManager {
     if (e.code === 'Space' || e.key === ' ') {
       this.jumpPressed = false;
     }
-    if (e.code === 'ShiftLeft' || e.code === 'ShiftRight' || e.key === 'Shift') {
+    if (e.code === 'ShiftLeft' || e.code === 'ShiftRight' || e.key === 'Shift' || e.key === 'Shift') {
+      // e.shiftKey might be false on keyup, so rely on code/key
       this.sprintPressed = false;
     }
   }

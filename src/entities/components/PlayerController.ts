@@ -16,8 +16,14 @@ export class PlayerController {
   // Directions
   public cameraForward: THREE.Vector3 = new THREE.Vector3(0, 0, -1);
   public cameraRight: THREE.Vector3 = new THREE.Vector3(1, 0, 0);
-  public worldMoveDir: THREE.Vector3 = new THREE.Vector3();
+  public worldMoveDir: THREE.Vector3 = new THREE.Vector3(); // Actual smoothed movement direction
+  public targetMoveDir: THREE.Vector3 = new THREE.Vector3(); // Raw input direction (for snappy rotation)
   public desiredTranslation: THREE.Vector3 = new THREE.Vector3();
+
+  // Inertia & Momentum
+  public currentVelocity: THREE.Vector3 = new THREE.Vector3();
+  private ACCELERATION = 15.0;
+  private DECELERATION = 20.0;
 
   // Settings
   private TERMINAL_VELOCITY = GAME_CONSTANTS.PLAYER.TERMINAL_VELOCITY;
@@ -61,20 +67,38 @@ export class PlayerController {
 
   public update(delta: number): void {
     const movement = this.input.getMovement();
-    this.worldMoveDir.set(0, 0, 0);
+    this.targetMoveDir.set(0, 0, 0);
 
     if (!this.state.isKnockedDown) {
       if (Math.abs(movement.z) > 0.01 || Math.abs(movement.x) > 0.01) {
         // Forward/backward relative to camera
-        this.worldMoveDir.addScaledVector(this.cameraForward, -movement.z);
+        this.targetMoveDir.addScaledVector(this.cameraForward, -movement.z);
         // Left/right relative to camera
-        this.worldMoveDir.addScaledVector(this.cameraRight, movement.x);
-        this.worldMoveDir.normalize();
+        this.targetMoveDir.addScaledVector(this.cameraRight, movement.x);
+        this.targetMoveDir.normalize();
       }
     }
 
-    // Handle Sprinting
-    this.state.currentSpeed = this.input.isSprintPressed() ? this.state.baseSpeed * 2.0 : this.state.baseSpeed;
+    // Handle Sprinting Speed
+    const targetSpeed = this.input.isSprintPressed() ? this.state.baseSpeed * 2.0 : this.state.baseSpeed;
+
+    // Apply Inertia & Momentum (Acceleration / Deceleration)
+    if (this.targetMoveDir.lengthSq() > 0) {
+      this.currentVelocity.x = THREE.MathUtils.lerp(this.currentVelocity.x, this.targetMoveDir.x * targetSpeed, this.ACCELERATION * delta);
+      this.currentVelocity.z = THREE.MathUtils.lerp(this.currentVelocity.z, this.targetMoveDir.z * targetSpeed, this.ACCELERATION * delta);
+    } else {
+      this.currentVelocity.x = THREE.MathUtils.lerp(this.currentVelocity.x, 0, this.DECELERATION * delta);
+      this.currentVelocity.z = THREE.MathUtils.lerp(this.currentVelocity.z, 0, this.DECELERATION * delta);
+    }
+
+    // Update actual movement direction and smoothed speed for the animator
+    this.state.currentSpeed = Math.sqrt(this.currentVelocity.x ** 2 + this.currentVelocity.z ** 2);
+    if (this.state.currentSpeed > 0.01) {
+      this.worldMoveDir.set(this.currentVelocity.x, 0, this.currentVelocity.z).normalize();
+    } else {
+      this.worldMoveDir.set(0, 0, 0);
+      this.state.currentSpeed = 0;
+    }
 
     // Handle Jumping & Gravity (Fix for Tunneling Bug)
     if (!this.state.grounded) {
@@ -96,9 +120,9 @@ export class PlayerController {
     }
 
     // Desired translation this frame
-    this.desiredTranslation.x = this.worldMoveDir.x * this.state.currentSpeed * delta;
+    this.desiredTranslation.x = this.currentVelocity.x * delta;
     this.desiredTranslation.y = this.state.velocityY * delta;
-    this.desiredTranslation.z = this.worldMoveDir.z * this.state.currentSpeed * delta;
+    this.desiredTranslation.z = this.currentVelocity.z * delta;
 
     // Use character controller to compute corrected movement
     this.characterController.computeColliderMovement(

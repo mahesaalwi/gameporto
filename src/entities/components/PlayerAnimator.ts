@@ -142,7 +142,14 @@ export class PlayerAnimator {
       const prevAction = this.actions[this.state.currentAction];
       
       // Use Three.js crossFadeTo which correctly handles weight management without strict setTimeouts
-      action.reset().play();
+      const isLocomotionTransition = (name === 'walk' || name === 'run') && 
+                                     (this.state.currentAction === 'walk' || this.state.currentAction === 'run');
+                                     
+      if (!isLocomotionTransition) {
+        action.reset();
+      }
+      
+      action.play();
       prevAction.crossFadeTo(action, fadeDuration, true);
     } else {
       action.reset().play();

@@ -373,13 +373,13 @@ export class Player {
     // Animation Update
     this.animator.update(delta);
 
-    // Calculate facing angle based on movement direction or preserve current facing direction
-    const moveLenSq = this.controller.worldMoveDir.lengthSq();
+    // Calculate facing angle based on raw input direction (for snappy turning) or preserve current facing direction
+    const targetMoveSq = this.controller.targetMoveDir.lengthSq();
     let targetAngle = 0;
 
     // We store the target angle on the class to preserve it when standing still
-    if (moveLenSq > 0.001) {
-      targetAngle = Math.atan2(this.controller.worldMoveDir.x, this.controller.worldMoveDir.z);
+    if (targetMoveSq > 0.001) {
+      targetAngle = Math.atan2(this.controller.targetMoveDir.x, this.controller.targetMoveDir.z);
       this._lastFacingAngle = targetAngle;
     } else {
       targetAngle = this._lastFacingAngle || Math.PI; // Default facing
@@ -421,8 +421,6 @@ export class Player {
   }
 
   private updateAnimationState(delta: number): void {
-    const moveLenSq = this.controller.worldMoveDir.lengthSq();
-
     if (this.state.isKnockedDown) {
       this.animator.playAnimation('stand_up');
     } else if (this.state.proceduralState === 'none' && !this.state.isFullBodyAttacking && !this.state.isAttacking) {
@@ -430,14 +428,15 @@ export class Player {
         if (this.animator.actions['jump']) {
           this.animator.playAnimation('jump');
         }
-      } else if (moveLenSq > 0.001) {
-        if (this.input.isSprintPressed()) {
-          this.animator.playAnimation('run', 0.2);
+      } else if (this.state.currentSpeed > 0.5) { // Smoothed moving threshold
+        // Use threshold based on baseSpeed for smooth transitions
+        if (this.state.currentSpeed > this.state.baseSpeed + 0.5) {
+          this.animator.playAnimation('run', 0.3); // Slower crossfade for run
         } else {
           this.animator.playAnimation('walk', 0.2);
         }
       } else {
-        this.animator.playAnimation('idle', 0.2);
+        this.animator.playAnimation('idle', 0.3); // Slower crossfade back to idle
       }
     }
   }

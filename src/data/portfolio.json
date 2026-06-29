@@ -1,0 +1,87 @@
+{
+  "about": {
+    "name": "Kaze",
+    "title": "CTO & Founder | Elite Security Researcher",
+    "tagline": "Building the future, one exploit at a time.",
+    "bio": "Cybersecurity visionary with deep expertise in AI/ML Security, Cloud Infrastructure, and Offensive Research. Passionate about building products that are both beautiful and bulletproof.",
+    "avatar": "",
+    "location": "Jakarta, Indonesia",
+    "email": "kaze@example.com"
+  },
+  "expertise": {
+    "title": "Core Expertise",
+    "items": [
+      {
+        "name": "AI/ML Security",
+        "icon": "🤖",
+        "description": "Prompt injection, data poisoning, LLM exploitation, and AI-driven defense systems."
+      },
+      {
+        "name": "Cloud & Infrastructure",
+        "icon": "☁️",
+        "description": "Cloud-Native security for Kubernetes, Docker, and microservices across AWS, Azure, GCP."
+      },
+      {
+        "name": "Offensive Security",
+        "icon": "🔓",
+        "description": "Red teaming, penetration testing for REST/GraphQL/gRPC APIs, and modern web frameworks."
+      },
+      {
+        "name": "Product Management",
+        "icon": "📦",
+        "description": "Product roadmap, user story crafting, feature prioritization, and business logic optimization."
+      }
+    ]
+  },
+  "tools": {
+    "title": "Tech Arsenal",
+    "items": [
+      { "name": "TypeScript", "category": "Language" },
+      { "name": "Python", "category": "Language" },
+      { "name": "Go", "category": "Language" },
+      { "name": "Rust", "category": "Language" },
+      { "name": "React / Next.js", "category": "Frontend" },
+      { "name": "Three.js", "category": "3D / WebGL" },
+      { "name": "Docker / Kubernetes", "category": "DevOps" },
+      { "name": "Terraform", "category": "IaC" },
+      { "name": "Burp Suite", "category": "Security" },
+      { "name": "Ghidra / IDA Pro", "category": "Reverse Engineering" },
+      { "name": "Metasploit", "category": "Exploitation" },
+      { "name": "AWS / GCP / Azure", "category": "Cloud" }
+    ]
+  },
+  "experience": {
+    "title": "Career Path",
+    "items": [
+      {
+        "role": "CTO & Co-Founder",
+        "company": "CyberVault Security",
+        "period": "2024 - Present",
+        "description": "Leading technical vision for an AI-powered cybersecurity platform. Architecting scalable infrastructure and building a Zero Trust culture."
+      },
+      {
+        "role": "Director of Cyber Security",
+        "company": "TechCorp Indonesia",
+        "period": "2022 - 2024",
+        "description": "Managed enterprise security operations, integrated DevSecOps into CI/CD pipelines, and conducted red team exercises."
+      },
+      {
+        "role": "Senior Security Researcher",
+        "company": "HackerOne / Bug Bounty",
+        "period": "2020 - 2022",
+        "description": "Discovered critical vulnerabilities in Fortune 500 companies. Specialized in API security and cloud misconfigurations."
+      }
+    ]
+  },
+  "clients": {
+    "title": "Trusted By",
+    "logos": [
+      { "name": "CyberVault", "color": "#00f0ff" },
+      { "name": "TechCorp", "color": "#ff00aa" },
+      { "name": "SecureNet", "color": "#00ff88" },
+      { "name": "DataShield", "color": "#ffaa00" },
+      { "name": "CloudGuard", "color": "#aa00ff" },
+      { "name": "NetDefense", "color": "#ff4444" }
+    ]
+  }
+}

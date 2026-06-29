@@ -8,7 +8,7 @@ export const GAME_CONSTANTS = {
       BOXES: '/models/box/pixel_boxs_-_low_poly_free.glb',
     },
     ANIMATIONS: {
-      WALK: '/models/characters/modeling/Catwalk Walk.fbx',
+      WALK: '/models/characters/modeling/Dwarf Walk.fbx',
       RUN: '/models/characters/modeling/Run.fbx',
       JUMP: '/models/characters/modeling/Jump.fbx',
       STAND_UP: '/models/characters/modeling/Stand Up.fbx',

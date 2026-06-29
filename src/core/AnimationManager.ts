@@ -16,7 +16,7 @@ export class AnimationManager {
     clip: THREE.AnimationClip, 
     newName: string, 
     lockXZ: boolean = false,
-    yStartsAtZero: boolean = false
+    yOffset: number = 0
   ): THREE.AnimationClip {
     clip.name = newName;
     
@@ -44,6 +44,7 @@ export class AnimationManager {
           const values = hipsTrack.values;
           for (let i = 0; i < values.length; i += 3) {
             values[i] = values[0];     // Lock X
+            values[i+1] += yOffset;    // Add manual Y offset to fix sinking
             values[i+2] = values[2];   // Lock Z
           }
         }
@@ -68,7 +69,7 @@ export class AnimationManager {
   /**
    * Load a single animation file.
    */
-  private async loadAnimation(path: string, name: string, lockXZ: boolean, upperBodyOnly: boolean = false): Promise<THREE.AnimationClip | null> {
+  private async loadAnimation(path: string, name: string, lockXZ: boolean, upperBodyOnly: boolean = false, yOffset: number = 0): Promise<THREE.AnimationClip | null> {
     try {
       const animModel = await this.assetLoader.loadModel(path);
       if (animModel.userData.animations && animModel.userData.animations.length > 0) {
@@ -76,7 +77,7 @@ export class AnimationManager {
         if (upperBodyOnly) {
           return this.processUpperBodyClip(clip, name);
         } else {
-          return this.processClip(clip, name, lockXZ);
+          return this.processClip(clip, name, lockXZ, yOffset);
         }
       }
     } catch (e) {
@@ -98,8 +99,8 @@ export class AnimationManager {
       this.loadAnimation(anims.JUMP, 'jump', true),
       this.loadAnimation(anims.STAND_UP, 'stand_up', true),
       this.loadAnimation(anims.IDLE, 'idle', true),
-      this.loadAnimation(anims.DROP_KICK, 'drop_kick', true),
-      this.loadAnimation(anims.ROLL, 'roll', true),
+      this.loadAnimation(anims.DROP_KICK, 'drop_kick', true, false, 35),
+      this.loadAnimation(anims.ROLL, 'roll', true, false, 20),
       this.loadAnimation(anims.PUNCH, 'punch', false, true),
       this.loadAnimation(anims.ELBOW_PUNCH, 'elbow_punch', false, true),
     ];

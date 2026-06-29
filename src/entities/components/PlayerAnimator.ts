@@ -49,7 +49,7 @@ export class PlayerAnimator {
           action.timeScale = 1.0;
           this.actions['run'] = action;
         } else if (name.includes('walk') || name === 'armature|walk') {
-          action.timeScale = 1.2;
+          action.timeScale = 1.6;
           this.actions['walk'] = action;
         } else if (name.includes('jump') || name.includes('fall')) {
           action.setLoop(THREE.LoopOnce, 1);

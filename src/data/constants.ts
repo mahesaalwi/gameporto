@@ -29,7 +29,7 @@ export const GAME_CONSTANTS = {
     CAPSULE_RADIUS: 0.4,
     /** Distance from capsule center to bottom (halfHeight + radius) */
     CAPSULE_BOTTOM_OFFSET: 0.9,
-    BASE_SPEED: 4.8,
+    BASE_SPEED: 6.5,
     SPRINT_MULTIPLIER: 1.8,
     GRAVITY: -15.0,
     JUMP_IMPULSE: 7.0,

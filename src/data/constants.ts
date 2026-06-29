@@ -29,10 +29,10 @@ export const GAME_CONSTANTS = {
     CAPSULE_BOTTOM_OFFSET: 0.9,
     /** Visual offset to prevent clipping into the ground for certain models */
     MODEL_Y_OFFSET: 0.0,
-    BASE_SPEED: 5.5,
-    SPRINT_MULTIPLIER: 8.8,
+    BASE_SPEED: 7.0,
+    SPRINT_MULTIPLIER: 6.8,
     GRAVITY: -15.0,
-    JUMP_IMPULSE: 7.0,
+    JUMP_IMPULSE: 8.0,
     TERMINAL_VELOCITY: -20.0,
     SPAWN_Y: 10,
   },

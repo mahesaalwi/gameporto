@@ -3,7 +3,7 @@ import type { TreasureType } from '../entities/TreasureBox';
 export const GAME_CONSTANTS = {
   ASSETS: {
     MODELS: {
-      PLAYER: '/models/characters/Arissa.fbx',
+      PLAYER: '/models/characters/Vampire A Lusth.fbx',
       AURA: '/models/effect/planeffect.glb',
       BOXES: '/models/box/pixel_boxs_-_low_poly_free.glb',
     },
